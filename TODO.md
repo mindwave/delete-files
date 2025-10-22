@@ -1,0 +1,11 @@
+## 10/22/25
+- Move to a testing folder for the following:
+- Right now, we're appending checked items to the string "checked_list"
+- Change this to an array
+- Loop through the array, deleting each item
+- Change button label to "Delete Checked Items"
+- Have the user verify the list before final deletion.
+- Add some styling to the checkboxes and button.
+- Can the checkboxes be in a table to show date and size better?
+    - Alternatively, just show the name which already has the date. DONE!
+    - Can we sort the checkboxes by date?

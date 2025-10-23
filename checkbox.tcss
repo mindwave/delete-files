@@ -5,6 +5,9 @@ Screen {
 ListView {
     width: auto;
     height: auto;
-    background: $boost;
-    padding: 2;
+    margin: 2 2;
+}
+
+Checkbox {
+    padding: 1 1;
 }

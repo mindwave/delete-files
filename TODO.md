@@ -1,8 +1,8 @@
 ## 10/22/25
 - Move to a testing folder for the following:
 - Right now, we're appending checked items to the string "checked_list"
-- Change this to an array
-- Loop through the array, deleting each item
+- Change this to deleting each item DONE!
+- Does the list of items automatically refresh after deletion? NO!
 - Change button label to "Delete Checked Items"
 - Have the user verify the list before final deletion.
 - Add some styling to the checkboxes and button.

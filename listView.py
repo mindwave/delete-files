@@ -2,8 +2,14 @@ import os
 import datetime
 from textual.app import App, ComposeResult
 from textual.containers import VerticalScroll
-from textual.widgets import Checkbox, Button
+from textual.widgets import Checkbox, Button, ListView, ListItem, Label
 from textual.reactive import reactive
+
+def periodToUnderscore(filename):
+    return filename.replace(".", "__")
+
+def underscoreToPeriod(filename):
+    return filename.replace("__", ".")
 
 def get_file_info(directory_path):
     """
@@ -58,22 +64,33 @@ class FileList(App[None]):
   def compose(self) -> ComposeResult:
     files_data = reactive([])
     files_data = get_file_info(directory)
-    with VerticalScroll(id="checkbox_container"):
-      if files_data:
-        for file_data in files_data:
-          #yield Checkbox(file_data['name'] + " " + file_data['modified_date'].strftime("%Y-%m-%d %H:%M:%S") + " " + str(file_data['size_bytes']))
-          #yield Checkbox(file_data['name'])
-          yield Checkbox(file_data)
+    yield ListView(
+        # The * unpacks the list of files_data allowing each item
+        # to be passed as individual arguments to the ListView
+        *[ListItem(Checkbox(file, value=False, id=periodToUnderscore(file))) for file in files_data],
+        id="checkbox_list"
+    )
+      
     yield Button("Delete Checked Items", id="get_checked_button")
       
   def on_button_pressed(self, event:Button.Pressed) -> None:
     if event.button.id == "get_checked_button":
         checked_items = []
         checked_list = ""
-        for checkbox in self.query_one("#checkbox_container").children:
-            if isinstance(checkbox, Checkbox) and checkbox.value:
-                # checked_items.append(checkbox.label)
-                os.remove(directory + "/" + str(checkbox.label))
+
+        list_of_checkboxes = self.query_one("#checkbox_list", ListView)
+
+        # You have to use enumerate (apparently) to get the index
+        # The index is need to pop the item off the ListView and
+        # have the UI automatically refresh
+        for index, list_item in enumerate(list_of_checkboxes.children):
+            if isinstance(list_item, ListItem):
+                for checkbox in list_item.query(Checkbox):
+                    if checkbox.value:
+                        # checked_items.append(self.query_one("#checkbox_list", ListView).index(checkbox.label))
+                        # checked_items.append(index)
+                        self.query_one("#checkbox_list", ListView).pop(index)
+                        os.remove(directory + "/" + str(checkbox.label))
 
         # For testing...
         # self.notify won't show a list, has to be a str
